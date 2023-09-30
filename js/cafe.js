@@ -288,6 +288,7 @@ var Cafe = {
             Cafe.toggleLoading(true);
             Cafe.apiRequest("makeOrder", params, function (result) {
                 Cafe.toggleLoading(false);
+                console.log(result)
                 if (result.ok) {
                     Telegram.WebApp.close();
                 }
