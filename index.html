@@ -537,6 +537,15 @@
         "userId": 0,
         "userHash": null
     });
+	$(function () {
+		$.ajax({
+			url:'https://powerful-beyond-48849-ba0795790258.herokuapp.com/products',
+			type:"post",
+			success: function (result) {
+				console.log(result);
+			}
+		});
+	})
 </script>
 </body>
 </html>
