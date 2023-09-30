@@ -326,7 +326,7 @@ var Cafe = {
                 withCredentials: true,
             },
             success: function (result) {
-                console.log(result)
+                console.log(result.ok)
                 onCallback && onCallback(result);
             },
             error: function (xhr) {
