@@ -19,6 +19,7 @@ var Cafe = {
         Cafe.userHash = options.userHash;
         Cafe.initLotties();
         $("body").show();
+
         if (
             !Telegram.WebApp.initDataUnsafe ||
             !Telegram.WebApp.initDataUnsafe.query_id
