@@ -7,7 +7,7 @@
     };
 })(jQuery);
 
-var Cafe = {
+let Cafe = {
     canPay: false,
     modeOrder: false,
     totalPrice: 0,
@@ -18,13 +18,14 @@ var Cafe = {
         Cafe.userId = options.userId;
         Cafe.userHash = options.userHash;
         Cafe.initLotties();
-        $("body").show();
+        let $body = $("body");
+        $body.show();
         if (
             !Telegram.WebApp.initDataUnsafe ||
             !Telegram.WebApp.initDataUnsafe.query_id
         ) {
             Cafe.isClosed = true;
-            $("body").addClass("closed");
+            $body.addClass("closed");
             Cafe.showStatus("Cafe is temporarily closed");
             return;
         }
@@ -58,12 +59,12 @@ var Cafe = {
     },
     eIncrClicked: function (e) {
         e.preventDefault();
-        var itemEl = $(this).parents(".js-item");
+        let itemEl = $(this).parents(".js-item");
         Cafe.incrClicked(itemEl, 1);
     },
     eDecrClicked: function (e) {
         e.preventDefault();
-        var itemEl = $(this).parents(".js-item");
+        let itemEl = $(this).parents(".js-item");
         Cafe.incrClicked(itemEl, -1);
     },
     eEditClicked: function (e) {
@@ -71,45 +72,45 @@ var Cafe = {
         Cafe.toggleMode(false);
     },
     getOrderItem: function (itemEl) {
-        var id = itemEl.data("item-id");
+        let id = itemEl.data("item-id");
         return $(".js-order-item").filter(function () {
-            return $(this).data("item-id") == id;
+            return $(this).data("item-id") === id;
         });
     },
     updateItem: function (itemEl, delta) {
-        var price = +itemEl.data("item-price");
-        var count = +itemEl.data("item-count") || 0;
-        var counterEl = $(".js-item-counter", itemEl);
+        let price = +itemEl.data("item-price");
+        let count = +itemEl.data("item-count") || 0;
+        let counterEl = $(".js-item-counter", itemEl);
         counterEl.text(count ? count : 1);
-        var isSelected = itemEl.hasClass("selected");
+        let isSelected = itemEl.hasClass("selected");
         if (!isSelected && count > 0) {
             $(".js-item-lottie", itemEl).each(function () {
                 RLottie.playOnce(this);
             });
         }
-        var anim_name = isSelected
+        let anim_name = isSelected
             ? delta > 0
                 ? "badge-incr"
                 : count > 0
                     ? "badge-decr"
                     : "badge-hide"
             : "badge-show";
-        var cur_anim_name = counterEl.css("animation-name");
+        let cur_anim_name = counterEl.css("animation-name");
         if (
-            (anim_name == "badge-incr" || anim_name == "badge-decr") &&
-            anim_name == cur_anim_name
+            (anim_name === "badge-incr" || anim_name === "badge-decr") &&
+            anim_name === cur_anim_name
         ) {
             anim_name += "2";
         }
         counterEl.css("animation-name", anim_name);
         itemEl.toggleClass("selected", count > 0);
 
-        var orderItemEl = Cafe.getOrderItem(itemEl);
-        var orderCounterEl = $(".js-order-item-counter", orderItemEl);
+        let orderItemEl = Cafe.getOrderItem(itemEl);
+        let orderCounterEl = $(".js-order-item-counter", orderItemEl);
         orderCounterEl.text(count ? count : 1);
         orderItemEl.toggleClass("selected", count > 0);
-        var orderPriceEl = $(".js-order-item-price", orderItemEl);
-        var item_price = count * price;
+        let orderPriceEl = $(".js-order-item-price", orderItemEl);
+        let item_price = count * price;
         orderPriceEl.text(Cafe.formatPrice(item_price));
 
         Cafe.updateTotalPrice();
@@ -118,7 +119,7 @@ var Cafe = {
         if (Cafe.isLoading || Cafe.isClosed) {
             return false;
         }
-        var count = +itemEl.data("item-count") || 0;
+        let count = +itemEl.data("item-count") || 0;
         count += delta;
         if (count < 0) {
             count = 0;
@@ -131,17 +132,17 @@ var Cafe = {
     },
     formatNumber: function (number, decimals, decPoint, thousandsSep) {
         number = (number + "").replace(/[^0-9+\-Ee.]/g, "");
-        var n = !isFinite(+number) ? 0 : +number;
-        var prec = !isFinite(+decimals) ? 0 : Math.abs(decimals);
-        var sep = typeof thousandsSep === "undefined" ? "," : thousandsSep;
-        var dec = typeof decPoint === "undefined" ? "." : decPoint;
-        var s = "";
-        var toFixedFix = function (n, prec) {
+        let n = !isFinite(+number) ? 0 : +number;
+        let prec = !isFinite(+decimals) ? 0 : Math.abs(decimals);
+        let sep = typeof thousandsSep === "undefined" ? "," : thousandsSep;
+        let dec = typeof decPoint === "undefined" ? "." : decPoint;
+        let s = "";
+        let toFixedFix = function (n, prec) {
             if (("" + n).indexOf("e") === -1) {
                 return +(Math.round(n + "e+" + prec) + "e-" + prec);
             } else {
-                var arr = ("" + n).split("e");
-                var sig = "";
+                let arr = ("" + n).split("e");
+                let sig = "";
                 if (+arr[1] + prec > 0) {
                     sig = "+";
                 }
@@ -163,7 +164,7 @@ var Cafe = {
         return s.join(dec);
     },
     updateMainButton: function () {
-        var mainButton = Telegram.WebApp.MainButton;
+        let mainButton = Telegram.WebApp.MainButton;
         if (Cafe.modeOrder) {
             if (Cafe.isLoading) {
                 mainButton
@@ -192,11 +193,11 @@ var Cafe = {
         }
     },
     updateTotalPrice: function () {
-        var total_price = 0;
+        let total_price = 0;
         $(".js-item").each(function () {
-            var itemEl = $(this);
-            var price = +itemEl.data("item-price");
-            var count = +itemEl.data("item-count") || 0;
+            let itemEl = $(this);
+            let price = +itemEl.data("item-price");
+            let count = +itemEl.data("item-count") || 0;
             total_price += price * count;
         });
         Cafe.canPay = total_price > 0;
@@ -204,11 +205,11 @@ var Cafe = {
         Cafe.updateMainButton();
     },
     getOrderData: function () {
-        var order_data = [];
+        let order_data = [];
         $(".js-item").each(function () {
-            var itemEl = $(this);
-            var id = itemEl.data("item-id");
-            var count = +itemEl.data("item-count") || 0;
+            let itemEl = $(this);
+            let id = itemEl.data("item-id");
+            let count = +itemEl.data("item-count") || 0;
             if (count > 0) {
                 order_data.push({ id: id, count: count });
             }
@@ -217,14 +218,14 @@ var Cafe = {
     },
     toggleMode: function (mode_order) {
         Cafe.modeOrder = mode_order;
-        var anim_duration, match;
+        let anim_duration, match;
         try {
             anim_duration = window
                 .getComputedStyle(document.body)
                 .getPropertyValue("--page-animation-duration");
-            if ((match = /([\d\.]+)(ms|s)/.exec(anim_duration))) {
+            if ((match = /([\d\\.]+)(ms|s)/.exec(anim_duration))) {
                 anim_duration = +match[1];
-                if (match[2] == "s") {
+                if (match[2] === "s") {
                     anim_duration *= 1000;
                 }
             } else {
@@ -233,14 +234,16 @@ var Cafe = {
         } catch (e) {
             anim_duration = 400;
         }
+        let $body = $("body");
+        let $cafeItems = $(".cafe-items");
         if (mode_order) {
-            var height = $(".cafe-items").height();
+            let height = $cafeItems.height();
             $(".js-item-lottie").each(function () {
                 RLottie.setVisible(this, false);
             });
             $(".cafe-order-overview").show();
-            $(".cafe-items").css("maxHeight", height).redraw();
-            $("body").addClass("order-mode");
+            $cafeItems.css("maxHeight", height).redraw();
+            $body.addClass("order-mode");
             $(".js-order-comment-field").each(function () {
                 autosize.update(this);
             });
@@ -254,9 +257,9 @@ var Cafe = {
             $(".js-item-lottie").each(function () {
                 RLottie.setVisible(this, false);
             });
-            $("body").removeClass("order-mode");
+            $body.removeClass("order-mode");
             setTimeout(function () {
-                $(".cafe-items").css("maxHeight", "");
+                $cafeItems.css("maxHeight", "");
                 $(".cafe-order-overview").hide();
                 $(".js-item-lottie").each(function () {
                     RLottie.setVisible(this, true);
@@ -276,8 +279,8 @@ var Cafe = {
             return false;
         }
         if (Cafe.modeOrder) {
-            var comment = $(".js-order-comment-field").val();
-            var params = {
+            let comment = $(".js-order-comment-field").val();
+            let params = {
                 order_data: Cafe.getOrderData(),
                 comment: comment,
             };
@@ -317,7 +320,7 @@ var Cafe = {
         $(".js-status").removeClass("shown");
     },
     apiRequest: function (method, data, onCallback) {
-        var authData = Telegram.WebApp.initData || "";
+        let authData = Telegram.WebApp.initData || "";
         $.ajax(Cafe.apiUrl, {
             type: "POST",
             data: $.extend(data, { _auth: authData, method: method }),
@@ -347,14 +350,14 @@ var Cafe = {
     else if ("undefined" != typeof exports && "undefined" != typeof module)
         t(exports, module);
     else {
-        var n = { exports: {} };
+        let n = { exports: {} };
         t(n.exports, n), (e.autosize = n.exports);
     }
 })(this, function (e, t) {
     "use strict";
     function n(e) {
         function t() {
-            var t = window.getComputedStyle(e, null);
+            let t = window.getComputedStyle(e, null);
             "vertical" === t.resize
                 ? (e.style.resize = "none")
                 : "both" === t.resize && (e.style.resize = "horizontal"),
@@ -366,25 +369,25 @@ var Cafe = {
                 l();
         }
         function n(t) {
-            var n = e.style.width;
+            let n = e.style.width;
             (e.style.width = "0px"),
                 e.offsetWidth,
                 (e.style.width = n),
                 (e.style.overflowY = t);
         }
         function o(e) {
-            for (var t = []; e && e.parentNode && e.parentNode instanceof Element; )
+            for (let t = []; e && e.parentNode && e.parentNode instanceof Element; )
                 e.parentNode.scrollTop &&
                 t.push({ node: e.parentNode, scrollTop: e.parentNode.scrollTop }),
                     (e = e.parentNode);
             return t;
         }
         function r() {
-            var t = e.style.height,
+            let t = e.style.height,
                 n = o(e),
                 r = document.documentElement && document.documentElement.scrollTop;
             e.style.height = "auto";
-            var i = e.scrollHeight + s;
+            let i = e.scrollHeight + s;
             return 0 === e.scrollHeight
                 ? void (e.style.height = t)
                 : ((e.style.height = i + "px"),
@@ -396,7 +399,7 @@ var Cafe = {
         }
         function l() {
             r();
-            var t = Math.round(parseFloat(e.style.height)),
+            let t = Math.round(parseFloat(e.style.height)),
                 o = window.getComputedStyle(e, null),
                 i = Math.round(parseFloat(o.height));
             if (
@@ -416,14 +419,14 @@ var Cafe = {
                 a !== i)
             ) {
                 a = i;
-                var l = d("autosize:resized");
+                let l = d("autosize:resized");
                 try {
                     e.dispatchEvent(l);
                 } catch (e) {}
             }
         }
         if (e && e.nodeName && "TEXTAREA" === e.nodeName && !i.has(e)) {
-            var s = null,
+            let s = null,
                 u = e.clientWidth,
                 a = null,
                 p = function () {
@@ -460,18 +463,18 @@ var Cafe = {
         }
     }
     function o(e) {
-        var t = i.get(e);
+        let t = i.get(e);
         t && t.destroy();
     }
     function r(e) {
-        var t = i.get(e);
+        let t = i.get(e);
         t && t.update();
     }
-    var i =
+    let i =
             "function" == typeof Map
                 ? new Map()
                 : (function () {
-                    var e = [],
+                    let e = [],
                         t = [];
                     return {
                         has: function (t) {
@@ -484,7 +487,7 @@ var Cafe = {
                             e.indexOf(n) === -1 && (e.push(n), t.push(o));
                         },
                         delete: function (n) {
-                            var o = e.indexOf(n);
+                            let o = e.indexOf(n);
                             o > -1 && (e.splice(o, 1), t.splice(o, 1));
                         },
                     };
@@ -496,11 +499,11 @@ var Cafe = {
         new Event("test");
     } catch (e) {
         d = function (e) {
-            var t = document.createEvent("Event");
+            let t = document.createEvent("Event");
             return t.initEvent(e, !0, !1), t;
         };
     }
-    var l = null;
+    let l = null;
     "undefined" == typeof window || "function" != typeof window.getComputedStyle
         ? ((l = function (e) {
             return e;
@@ -533,27 +536,27 @@ var Cafe = {
 
 function initRipple() {
     if (!document.querySelectorAll) return;
-    var rippleHandlers = document.querySelectorAll(".ripple-handler");
-    var redraw = function (el) {
+    let rippleHandlers = document.querySelectorAll(".ripple-handler");
+    let redraw = function (el) {
         el.offsetTop + 1;
     };
-    var isTouch = "ontouchstart" in window;
-    for (var i = 0; i < rippleHandlers.length; i++) {
+    let isTouch = "ontouchstart" in window;
+    for (let i = 0; i < rippleHandlers.length; i++) {
         (function (rippleHandler) {
             function onRippleStart(e) {
-                var rippleMask = rippleHandler.querySelector(".ripple-mask");
+                let rippleMask = rippleHandler.querySelector(".ripple-mask");
                 if (!rippleMask) return;
-                var rect = rippleMask.getBoundingClientRect();
-                if (e.type == "touchstart") {
-                    var clientX = e.targetTouches[0].clientX;
-                    var clientY = e.targetTouches[0].clientY;
+                let rect = rippleMask.getBoundingClientRect();
+                if (e.type === "touchstart") {
+                    let clientX = e.targetTouches[0].clientX;
+                    let clientY = e.targetTouches[0].clientY;
                 } else {
-                    var clientX = e.clientX;
-                    var clientY = e.clientY;
+                    let clientX = e.clientX;
+                    let clientY = e.clientY;
                 }
-                var rippleX = clientX - rect.left - rippleMask.offsetWidth / 2;
-                var rippleY = clientY - rect.top - rippleMask.offsetHeight / 2;
-                var ripple = rippleHandler.querySelector(".ripple");
+                let rippleX = clientX - rect.left - rippleMask.offsetWidth / 2;
+                let rippleY = clientY - rect.top - rippleMask.offsetHeight / 2;
+                let ripple = rippleHandler.querySelector(".ripple");
                 ripple.style.transition = "none";
                 redraw(ripple);
                 ripple.style.transform =
