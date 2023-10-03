@@ -309,8 +309,10 @@
 					return photoDiv;
 				}
 				if (result) {
+					console.log(typeof result);
 					let $cafeItems = $(".cafe-items");
 					for (let elem in result) {
+						console.log(elem);
 						let mainDiv = createDiv(elem);
 						let itemCounter = createCounter();
 						let itemPhoto = createPhoto();
