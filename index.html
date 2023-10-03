@@ -313,10 +313,11 @@
 					let $cafeItems = $(".cafe-items");
 					for (let elem in result) {
 						console.log(elem);
-						let mainDiv = createDiv(elem);
+						console.log(result[elem]);
+						let mainDiv = createDiv(result[elem]);
 						let itemCounter = createCounter();
 						let itemPhoto = createPhoto();
-						let itemLabel = createLabel(elem);
+						let itemLabel = createLabel(result[elem]);
 						let itemButtons = createButtons();
 						mainDiv.append(itemCounter);
 						mainDiv.append(itemPhoto);
